@@ -1,0 +1,45 @@
+from flask import Flask, request
+
+app = Flask(__name__)
+
+# Resume content
+resume_content = {
+    "about": "I am Tamil Selvan, a Full Stack Developer with experience in HTML, CSS, JavaScript, React.js, Angular.js, Python, Node.js, MySQL, and MongoDB.",
+    "projects": "Built projects: To-Do List App, Personal Portfolio Website, Restaurant Website.",
+    "experience": "Worked at: TCS, Apollo Tyres, TVS Pvt Ltd, OLA.",
+    "education": "Diploma in Engineering.",
+    "location": "Madurai, India.",
+    "linkedin": "https://linkedin.com/in/tamil-selvan-716842143"
+}
+
+@app.route('/ask', methods=['POST'])
+def ask_resume():
+    data = request.get_json()
+    query = data.get("query", "").lower()
+    
+    if not query:
+        return {"error": "Please provide a query"}
+
+    # Simple keyword matching
+    if "about" in query or "yourself" in query:
+        answer = resume_content["about"]
+    elif "project" in query:
+        answer = resume_content["projects"]
+    elif "experience" in query or "worked" in query:
+        answer = resume_content["experience"]
+    elif "education" in query or "study" in query:
+        answer = resume_content["education"]
+    elif "location" in query:
+        answer = resume_content["location"]
+    elif "linkedin" in query:
+        answer = resume_content["linkedin"]
+    else:
+        answer = "Sorry, I can only answer questions strictly based on my resume content."
+
+    return {
+        "query": query,
+        "response": answer
+    }
+
+if __name__ == '__main__':
+    app.run(debug=True)
